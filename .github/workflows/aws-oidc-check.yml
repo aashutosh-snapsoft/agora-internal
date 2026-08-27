@@ -36,6 +36,10 @@ jobs:
           role-to-assume: ${{ env.AWS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
           role-session-name: agora-internal-oidc-check
+          # This is a connectivity/trust smoke test: fail fast so a denied
+          # AssumeRoleWithWebIdentity request reports its AWS error instead of
+          # consuming the job timeout in the action's exponential retries.
+          retry-max-attempts: 1
 
       - name: Who am I (proves the role was assumed, no static keys)
         run: |
