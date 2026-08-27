@@ -1,4 +1,5 @@
 name: AWS OIDC connection check
+# trigger: verify the OIDC connection runs green
 
 # Smoke test that THIS repo can federate into AWS via OIDC and reach ECR — with no stored AWS keys.
 # Proves the trust set up in socratics-build (accounts/control-plane/github-oidc.tf):
