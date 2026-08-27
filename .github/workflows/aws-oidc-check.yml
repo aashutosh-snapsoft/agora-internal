@@ -1,5 +1,5 @@
 name: AWS OIDC connection check
-# trigger: re-verify after trust policy now includes this repo
+# trigger: verify after trust policy matches the immutable-ID sub
 
 # Smoke test that THIS repo can federate into AWS via OIDC and reach ECR — with no stored AWS keys.
 # Proves the trust set up in socratics-build (accounts/control-plane/github-oidc.tf):
