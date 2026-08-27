@@ -1,0 +1,22 @@
+## References
+
+### UI Development
+- Storybook usage: `docs/ui-testing/storybook.md`
+
+### Testing
+- Unit testing best practices: `docs/unit-testing-logic.md`
+
+### Architecture
+- Routing architecture: `docs/routing-architecture.md`
+- Data fetching patterns: `docs/polling-migration-guide.md`
+
+### Bug Fixes & Patterns
+- Forecast assumptions state management: `docs/FORECAST-ASSUMPTIONS-DATA-LOSS-FIX.md`
+
+## Tech Stack
+- Next.js 15 with React 18
+- State: Redux Toolkit with Redux Persist
+- Data: Apollo Client (GraphQL) + React Query (polling)
+- UI: Material-UI (MUI) + Tailwind CSS
+- Auth: Auth0
+- Testing: Jest + Storybook

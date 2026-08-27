@@ -1,0 +1,8 @@
+node_modules
+.next
+server-runtime-deps
+*.log
+.git
+.env
+.env.*
+!.env.template

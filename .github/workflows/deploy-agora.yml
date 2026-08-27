@@ -1,0 +1,291 @@
+name: Deploy Agora to Azure Container Apps
+
+on:
+  workflow_dispatch:  # Manual trigger
+    inputs:
+      docker_tag:
+        description: 'Docker image tag to deploy (leave empty to build new image)'
+        required: false
+        default: ''
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - prod
+  push:
+    branches:
+      - dev
+      - main
+    paths-ignore:
+      - '**.md'
+      - '.github/**'
+      - '!.github/workflows/deploy-agora.yml'
+
+env:
+  AZURE_IMAGE_NAME: agora
+
+permissions:
+  id-token: write   # Required for OIDC authentication
+  contents: read
+
+jobs:
+  build-and-push:
+    name: Build and Push Docker Image
+    runs-on: ubuntu-latest
+    if: github.event.inputs.docker_tag == ''
+    outputs:
+      docker_tag: ${{ steps.set-tag.outputs.TAG }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set environment variables
+        id: set-env
+        run: |
+          # Determine environment: use input if manual, otherwise determine from branch
+          ENV="${{ github.event.inputs.environment }}"
+          if [[ -z "$ENV" ]]; then
+            # Automatic trigger from push - determine from branch
+            if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+              ENV="prod"
+            else
+              ENV="dev"
+            fi
+          fi
+          echo "ENV=$ENV" >> $GITHUB_OUTPUT
+
+          # Set environment-specific prefix
+          if [[ "$ENV" == "prod" ]]; then
+            echo "PREFIX=PROD" >> $GITHUB_OUTPUT
+          else
+            echo "PREFIX=DEV" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Set Docker tag
+        id: set-tag
+        run: |
+          if [[ ${{ github.ref_type }} == 'tag' ]]; then
+            echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          elif [[ ${{ github.ref }} == 'refs/heads/dev' ]]; then
+            echo "TAG=dev-${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+          else
+            echo "TAG=main-${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Login to Azure Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ steps.set-env.outputs.PREFIX == 'PROD' && vars.PROD_ACR_SERVER || vars.DEV_ACR_SERVER }}
+          username: ${{ steps.set-env.outputs.PREFIX == 'PROD' && vars.PROD_ACR_USERNAME || vars.DEV_ACR_USERNAME }}
+          password: ${{ steps.set-env.outputs.PREFIX == 'PROD' && secrets.PROD_ACR_PASSWORD || secrets.DEV_ACR_PASSWORD }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          secrets: |
+            sentry_auth_token=${{ secrets.SENTRY_AUTH_TOKEN }}
+          build-args: |
+            NEXT_PUBLIC_BUILD_ID=${{ github.sha }}
+            SENTRY_RELEASE=${{ github.sha }}
+            NEXT_PUBLIC_URL=${{ steps.set-env.outputs.PREFIX == 'PROD' && vars.PROD_NEXT_PUBLIC_URL || vars.DEV_NEXT_PUBLIC_URL }}
+            NEXT_PUBLIC_LOGOS_URL=${{ steps.set-env.outputs.PREFIX == 'PROD' && vars.PROD_NEXT_PUBLIC_LOGOS_URL || vars.DEV_NEXT_PUBLIC_LOGOS_URL }}
+            NEXT_PUBLIC_GRAPHQL_URL=${{ steps.set-env.outputs.PREFIX == 'PROD' && vars.PROD_NEXT_PUBLIC_GRAPHQL_URL || vars.DEV_NEXT_PUBLIC_GRAPHQL_URL }}
+            NEXT_PUBLIC_HASURA_WS_URL=${{ steps.set-env.outputs.PREFIX == 'PROD' && vars.PROD_NEXT_PUBLIC_HASURA_WS_URL || vars.DEV_NEXT_PUBLIC_HASURA_WS_URL }}
+            NEXT_PUBLIC_AUTH0_DOMAIN=${{ steps.set-env.outputs.PREFIX == 'PROD' && vars.PROD_NEXT_PUBLIC_AUTH0_DOMAIN || vars.DEV_NEXT_PUBLIC_AUTH0_DOMAIN }}
+            NEXT_PUBLIC_AUTH0_CLIENT_ID=${{ steps.set-env.outputs.PREFIX == 'PROD' && vars.PROD_NEXT_PUBLIC_AUTH0_CLIENT_ID || vars.DEV_NEXT_PUBLIC_AUTH0_CLIENT_ID }}
+            NEXT_PUBLIC_AUTH0_REDIRECT_URI=${{ steps.set-env.outputs.PREFIX == 'PROD' && vars.PROD_NEXT_PUBLIC_AUTH0_REDIRECT_URI || vars.DEV_NEXT_PUBLIC_AUTH0_REDIRECT_URI }}
+            NEXT_PUBLIC_AUTH0_AUDIENCE=${{ steps.set-env.outputs.PREFIX == 'PROD' && vars.PROD_NEXT_PUBLIC_AUTH0_AUDIENCE || vars.DEV_NEXT_PUBLIC_AUTH0_AUDIENCE }}
+            NEXT_PUBLIC_GA_MEASUREMENT_ID=${{ steps.set-env.outputs.PREFIX == 'PROD' && vars.PROD_NEXT_PUBLIC_GA_MEASUREMENT_ID || vars.DEV_NEXT_PUBLIC_GA_MEASUREMENT_ID }}
+            NEXT_PUBLIC_AMPLITUDE_API_KEY=${{ steps.set-env.outputs.PREFIX == 'PROD' && vars.PROD_NEXT_PUBLIC_AMPLITUDE_API_KEY || vars.DEV_NEXT_PUBLIC_AMPLITUDE_API_KEY }}
+            NEXT_PUBLIC_COMPOSE_BASE_URL=${{ steps.set-env.outputs.PREFIX == 'PROD' && vars.PROD_NEXT_PUBLIC_COMPOSE_BASE_URL || vars.DEV_NEXT_PUBLIC_COMPOSE_BASE_URL }}
+            AUTH0_SECRET=${{ steps.set-env.outputs.PREFIX == 'PROD' && secrets.PROD_AUTH0_SECRET || secrets.DEV_AUTH0_SECRET }}
+            AUTH0_BASE_URL=${{ steps.set-env.outputs.PREFIX == 'PROD' && vars.PROD_AUTH0_BASE_URL || vars.DEV_AUTH0_BASE_URL }}
+            AUTH0_ISSUER_BASE_URL=${{ steps.set-env.outputs.PREFIX == 'PROD' && vars.PROD_AUTH0_ISSUER_BASE_URL || vars.DEV_AUTH0_ISSUER_BASE_URL }}
+            AUTH0_CLIENT_ID=${{ steps.set-env.outputs.PREFIX == 'PROD' && vars.PROD_NEXT_PUBLIC_AUTH0_CLIENT_ID || vars.DEV_NEXT_PUBLIC_AUTH0_CLIENT_ID }}
+            AUTH0_CLIENT_SECRET=${{ steps.set-env.outputs.PREFIX == 'PROD' && secrets.PROD_AUTH0_CLIENT_SECRET || secrets.DEV_AUTH0_CLIENT_SECRET }}
+            AUTH0_AUDIENCE=${{ steps.set-env.outputs.PREFIX == 'PROD' && vars.PROD_NEXT_PUBLIC_AUTH0_AUDIENCE || vars.DEV_NEXT_PUBLIC_AUTH0_AUDIENCE }}
+            HASURA_ADMIN_SECRET=${{ steps.set-env.outputs.PREFIX == 'PROD' && secrets.PROD_HASURA_ADMIN_SECRET || secrets.DEV_HASURA_ADMIN_SECRET }}
+          tags: |
+            ${{ steps.set-env.outputs.PREFIX == 'PROD' && vars.PROD_ACR_SERVER || vars.DEV_ACR_SERVER }}/${{ env.AZURE_IMAGE_NAME }}:${{ steps.set-tag.outputs.TAG }}
+            ${{ steps.set-env.outputs.PREFIX == 'PROD' && vars.PROD_ACR_SERVER || vars.DEV_ACR_SERVER }}/${{ env.AZURE_IMAGE_NAME }}:${{ steps.set-env.outputs.PREFIX == 'PROD' && 'latest' || 'dev-latest' }}
+
+      - name: Send build success notification
+        if: success()
+        run: |
+          REGISTRY="${{ steps.set-env.outputs.PREFIX == 'PROD' && vars.PROD_ACR_SERVER || vars.DEV_ACR_SERVER }}"
+          curl -X POST -H "Content-Type: application/json" \
+          -d "{\"text\": \"🚀 [${{ steps.set-env.outputs.ENV }}] Docker image build completed: $REGISTRY/${{ env.AZURE_IMAGE_NAME }}:${{ steps.set-tag.outputs.TAG }}\"}" \
+          ${{ vars.HERMES_WEBHOOK_URL }} || true
+
+      - name: Send build failure notification
+        if: failure()
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+          -d "{\"text\": \"❌ [${{ steps.set-env.outputs.ENV }}] Docker image build failed\nhttps://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}" \
+          ${{ vars.HERMES_WEBHOOK_URL }} || true
+
+  deploy-to-azure:
+    name: Deploy to Azure Container Apps
+    runs-on: ubuntu-latest
+    needs: [build-and-push]
+    if: always() && (needs.build-and-push.result == 'success' || needs.build-and-push.result == 'skipped')
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set environment variables
+        id: set-env
+        run: |
+          # Determine environment: use input if manual, otherwise determine from branch
+          ENV="${{ github.event.inputs.environment }}"
+          if [[ -z "$ENV" ]]; then
+            # Automatic trigger from push - determine from branch
+            if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+              ENV="prod"
+            else
+              ENV="dev"
+            fi
+          fi
+          echo "ENV=$ENV" >> $GITHUB_OUTPUT
+
+          # Set environment-specific prefix
+          if [[ "$ENV" == "prod" ]]; then
+            echo "PREFIX=PROD" >> $GITHUB_OUTPUT
+          else
+            echo "PREFIX=DEV" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Set deployment tag
+        id: deployment-tag
+        run: |
+          if [[ -n "${{ github.event.inputs.docker_tag }}" ]]; then
+            echo "TAG=${{ github.event.inputs.docker_tag }}" >> $GITHUB_OUTPUT
+          else
+            echo "TAG=${{ needs.build-and-push.outputs.docker_tag }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Azure Login via OIDC
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy to Azure Container Apps
+        env:
+          PREFIX: ${{ steps.set-env.outputs.PREFIX }}
+        run: |
+          DEPLOYMENT_NAME="agora-${{ steps.set-env.outputs.ENV }}-$(date +%Y%m%d-%H%M%S)"
+
+          # Get environment-specific values
+          RESOURCE_GROUP=$(if [ "$PREFIX" == "PROD" ]; then echo "${{ vars.PROD_RESOURCE_GROUP }}"; else echo "${{ vars.DEV_RESOURCE_GROUP }}"; fi)
+          LOCATION=$(if [ "$PREFIX" == "PROD" ]; then echo "${{ vars.PROD_LOCATION }}"; else echo "${{ vars.DEV_LOCATION }}"; fi)
+          CONTAINER_APP_NAME=$(if [ "$PREFIX" == "PROD" ]; then echo "${{ vars.PROD_CONTAINER_APP_NAME }}"; else echo "${{ vars.DEV_CONTAINER_APP_NAME }}"; fi)
+          CONTAINER_APP_ENV_NAME=$(if [ "$PREFIX" == "PROD" ]; then echo "${{ vars.PROD_CONTAINER_APP_ENV_NAME }}"; else echo "${{ vars.DEV_CONTAINER_APP_ENV_NAME }}"; fi)
+          ENVIRONMENT=$(if [ "$PREFIX" == "PROD" ]; then echo "${{ vars.PROD_ENVIRONMENT }}"; else echo "${{ vars.DEV_ENVIRONMENT }}"; fi)
+          ACR_SERVER=$(if [ "$PREFIX" == "PROD" ]; then echo "${{ vars.PROD_ACR_SERVER }}"; else echo "${{ vars.DEV_ACR_SERVER }}"; fi)
+          ACR_USERNAME=$(if [ "$PREFIX" == "PROD" ]; then echo "${{ vars.PROD_ACR_USERNAME }}"; else echo "${{ vars.DEV_ACR_USERNAME }}"; fi)
+          ACR_PASSWORD=$(if [ "$PREFIX" == "PROD" ]; then echo "${{ secrets.PROD_ACR_PASSWORD }}"; else echo "${{ secrets.DEV_ACR_PASSWORD }}"; fi)
+          HASURA_ADMIN_SECRET=$(if [ "$PREFIX" == "PROD" ]; then echo "${{ secrets.PROD_HASURA_ADMIN_SECRET }}"; else echo "${{ secrets.DEV_HASURA_ADMIN_SECRET }}"; fi)
+          AUTH0_CLIENT_SECRET=$(if [ "$PREFIX" == "PROD" ]; then echo "${{ secrets.PROD_AUTH0_CLIENT_SECRET }}"; else echo "${{ secrets.DEV_AUTH0_CLIENT_SECRET }}"; fi)
+          AUTH0_SECRET=$(if [ "$PREFIX" == "PROD" ]; then echo "${{ secrets.PROD_AUTH0_SECRET }}"; else echo "${{ secrets.DEV_AUTH0_SECRET }}"; fi)
+          AUTH0_BASE_URL=$(if [ "$PREFIX" == "PROD" ]; then echo "${{ vars.PROD_AUTH0_BASE_URL }}"; else echo "${{ vars.DEV_AUTH0_BASE_URL }}"; fi)
+          AUTH0_ISSUER_BASE_URL=$(if [ "$PREFIX" == "PROD" ]; then echo "${{ vars.PROD_AUTH0_ISSUER_BASE_URL }}"; else echo "${{ vars.DEV_AUTH0_ISSUER_BASE_URL }}"; fi)
+          NEXT_SERVER_ACTIONS_KEY=$(if [ "$PREFIX" == "PROD" ]; then echo "${{ secrets.PROD_NEXT_SERVER_ACTIONS_ENCRYPTION_KEY }}"; else echo "${{ secrets.DEV_NEXT_SERVER_ACTIONS_ENCRYPTION_KEY }}"; fi)
+          CPU=$(if [ "$PREFIX" == "PROD" ]; then echo "${{ vars.PROD_CPU }}"; else echo "${{ vars.DEV_CPU }}"; fi)
+          MEMORY=$(if [ "$PREFIX" == "PROD" ]; then echo "${{ vars.PROD_MEMORY }}"; else echo "${{ vars.DEV_MEMORY }}"; fi)
+          MIN_REPLICAS=$(if [ "$PREFIX" == "PROD" ]; then echo "${{ vars.PROD_MIN_REPLICAS }}"; else echo "${{ vars.DEV_MIN_REPLICAS }}"; fi)
+          MAX_REPLICAS=$(if [ "$PREFIX" == "PROD" ]; then echo "${{ vars.PROD_MAX_REPLICAS }}"; else echo "${{ vars.DEV_MAX_REPLICAS }}"; fi)
+          ENABLE_WORKLOAD_PROFILES=$(if [ "$PREFIX" == "PROD" ]; then echo "${{ vars.PROD_ENABLE_WORKLOAD_PROFILES }}"; else echo "${{ vars.DEV_ENABLE_WORKLOAD_PROFILES }}"; fi)
+          CUSTOM_HOSTNAME=$(if [ "$PREFIX" == "PROD" ]; then echo "${{ vars.PROD_CUSTOM_HOSTNAME }}"; else echo "${{ vars.DEV_CUSTOM_HOSTNAME }}"; fi)
+          MANAGED_CERT=$(if [ "$PREFIX" == "PROD" ]; then echo "${{ vars.PROD_MANAGED_CERTIFICATE_NAME }}"; else echo "${{ vars.DEV_MANAGED_CERTIFICATE_NAME }}"; fi)
+          APP_URL=$(if [ "$PREFIX" == "PROD" ]; then echo "${{ vars.PROD_NEXT_PUBLIC_URL }}"; else echo "${{ vars.DEV_NEXT_PUBLIC_URL }}"; fi)
+          LOGOS_URL=$(if [ "$PREFIX" == "PROD" ]; then echo "${{ vars.PROD_NEXT_PUBLIC_LOGOS_URL }}"; else echo "${{ vars.DEV_NEXT_PUBLIC_LOGOS_URL }}"; fi)
+          GRAPHQL_URL=$(if [ "$PREFIX" == "PROD" ]; then echo "${{ vars.PROD_NEXT_PUBLIC_GRAPHQL_URL }}"; else echo "${{ vars.DEV_NEXT_PUBLIC_GRAPHQL_URL }}"; fi)
+          HASURA_WS_URL=$(if [ "$PREFIX" == "PROD" ]; then echo "${{ vars.PROD_NEXT_PUBLIC_HASURA_WS_URL }}"; else echo "${{ vars.DEV_NEXT_PUBLIC_HASURA_WS_URL }}"; fi)
+          HASURA_GRAPHQL_URL=$(if [ "$PREFIX" == "PROD" ]; then echo "${{ vars.PROD_NEXT_PUBLIC_GRAPHQL_URL }}"; else echo "${{ vars.DEV_NEXT_PUBLIC_GRAPHQL_URL }}"; fi)
+          AUTH0_DOMAIN=$(if [ "$PREFIX" == "PROD" ]; then echo "${{ vars.PROD_NEXT_PUBLIC_AUTH0_DOMAIN }}"; else echo "${{ vars.DEV_NEXT_PUBLIC_AUTH0_DOMAIN }}"; fi)
+          AUTH0_CLIENT_ID=$(if [ "$PREFIX" == "PROD" ]; then echo "${{ vars.PROD_NEXT_PUBLIC_AUTH0_CLIENT_ID }}"; else echo "${{ vars.DEV_NEXT_PUBLIC_AUTH0_CLIENT_ID }}"; fi)
+          AUTH0_REDIRECT_URI=$(if [ "$PREFIX" == "PROD" ]; then echo "${{ vars.PROD_NEXT_PUBLIC_AUTH0_REDIRECT_URI }}"; else echo "${{ vars.DEV_NEXT_PUBLIC_AUTH0_REDIRECT_URI }}"; fi)
+          AUTH0_AUDIENCE=$(if [ "$PREFIX" == "PROD" ]; then echo "${{ vars.PROD_NEXT_PUBLIC_AUTH0_AUDIENCE }}"; else echo "${{ vars.DEV_NEXT_PUBLIC_AUTH0_AUDIENCE }}"; fi)
+          GA_MEASUREMENT_ID=$(if [ "$PREFIX" == "PROD" ]; then echo "${{ vars.PROD_NEXT_PUBLIC_GA_MEASUREMENT_ID }}"; else echo "${{ vars.DEV_NEXT_PUBLIC_GA_MEASUREMENT_ID }}"; fi)
+          AMPLITUDE_API_KEY=$(if [ "$PREFIX" == "PROD" ]; then echo "${{ vars.PROD_NEXT_PUBLIC_AMPLITUDE_API_KEY }}"; else echo "${{ vars.DEV_NEXT_PUBLIC_AMPLITUDE_API_KEY }}"; fi)
+
+          az deployment group create \
+            --resource-group "$RESOURCE_GROUP" \
+            --name "$DEPLOYMENT_NAME" \
+            --template-file deployments/ACS/azure-container-app.bicep \
+            --parameters \
+              buildId="${{ github.sha }}" \
+              containerAppName="$CONTAINER_APP_NAME" \
+              location="$LOCATION" \
+              environment="$ENVIRONMENT" \
+              containerAppEnvironmentName="$CONTAINER_APP_ENV_NAME" \
+              containerImage="$ACR_SERVER/${{ env.AZURE_IMAGE_NAME }}:${{ steps.deployment-tag.outputs.TAG }}" \
+              acrServer="$ACR_SERVER" \
+              acrUsername="$ACR_USERNAME" \
+              acrPassword="$ACR_PASSWORD" \
+              hasuraAdminSecret="$HASURA_ADMIN_SECRET" \
+              auth0ClientSecret="$AUTH0_CLIENT_SECRET" \
+              auth0Secret="$AUTH0_SECRET" \
+              auth0BaseUrl="$AUTH0_BASE_URL" \
+              auth0IssuerBaseUrl="$AUTH0_ISSUER_BASE_URL" \
+              nextServerActionsEncryptionKey="$NEXT_SERVER_ACTIONS_KEY" \
+              cpu="$CPU" \
+              memory="$MEMORY" \
+              minReplicas="$MIN_REPLICAS" \
+              maxReplicas="$MAX_REPLICAS" \
+              enableWorkloadProfiles="$ENABLE_WORKLOAD_PROFILES" \
+              customHostname="$CUSTOM_HOSTNAME" \
+              managedCertificateName="$MANAGED_CERT" \
+              appUrl="$APP_URL" \
+              logosUrl="$LOGOS_URL" \
+              graphqlUrl="$GRAPHQL_URL" \
+              hasuraWsUrl="$HASURA_WS_URL" \
+              hasuraGraphqlUrl="$HASURA_GRAPHQL_URL" \
+              auth0Domain="$AUTH0_DOMAIN" \
+              auth0ClientId="$AUTH0_CLIENT_ID" \
+              auth0RedirectUri="$AUTH0_REDIRECT_URI" \
+              auth0Audience="$AUTH0_AUDIENCE" \
+              gaMeasurementId="$GA_MEASUREMENT_ID" \
+              amplitudeApiKey="$AMPLITUDE_API_KEY"
+
+      - name: Get deployment outputs
+        id: deployment-outputs
+        env:
+          PREFIX: ${{ steps.set-env.outputs.PREFIX }}
+        run: |
+          CONTAINER_APP_NAME=$(if [ "$PREFIX" == "PROD" ]; then echo "${{ vars.PROD_CONTAINER_APP_NAME }}"; else echo "${{ vars.DEV_CONTAINER_APP_NAME }}"; fi)
+          RESOURCE_GROUP=$(if [ "$PREFIX" == "PROD" ]; then echo "${{ vars.PROD_RESOURCE_GROUP }}"; else echo "${{ vars.DEV_RESOURCE_GROUP }}"; fi)
+
+          FQDN=$(az containerapp show \
+            --name "$CONTAINER_APP_NAME" \
+            --resource-group "$RESOURCE_GROUP" \
+            --query "properties.configuration.ingress.fqdn" \
+            --output tsv)
+          echo "FQDN=$FQDN" >> $GITHUB_OUTPUT
+
+      - name: Send deployment success notification
+        if: success()
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+          -d "{\"text\": \"✅ [${{ steps.set-env.outputs.ENV }}] Deployment to Azure Container Apps completed\n🔗 URL: https://${{ steps.deployment-outputs.outputs.FQDN }}\n🏷️  Tag: ${{ steps.deployment-tag.outputs.TAG }}\"}" \
+          ${{ vars.HERMES_WEBHOOK_URL }} || true
+
+      - name: Send deployment failure notification
+        if: failure()
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+          -d "{\"text\": \"❌ [${{ steps.set-env.outputs.ENV }}] Deployment to Azure Container Apps failed\nhttps://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}" \
+          ${{ vars.HERMES_WEBHOOK_URL }} || true
+
+      - name: Azure Logout
+        if: always()
+        run: az logout
