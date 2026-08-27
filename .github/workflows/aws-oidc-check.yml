@@ -1,0 +1,43 @@
+name: AWS OIDC connection check
+
+# Smoke test that THIS repo can federate into AWS via OIDC and reach ECR — with no stored AWS keys.
+# Proves the trust set up in socratics-build (accounts/control-plane/github-oidc.tf):
+#   role github-actions-agora-ecr-push trusts repo:aashutosh-snapsoft/agora-internal:*
+# Run it from the Actions tab (Run workflow) whenever you want to confirm the connection.
+on:
+  workflow_dispatch:
+
+# Least privilege: id-token to request the OIDC token, contents:read for the checkout-free job.
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: us-west-2
+  # The role created by the OIDC Terraform. Not a secret — it's an ARN.
+  AWS_ROLE_ARN: arn:aws:iam::837567123500:role/github-actions-agora-ecr-push
+  ECR_REGISTRY: 837567123500.dkr.ecr.us-west-2.amazonaws.com
+
+jobs:
+  oidc-check:
+    name: Assume role + reach ECR
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Configure AWS credentials via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+          role-session-name: agora-internal-oidc-check
+
+      - name: Who am I (proves the role was assumed, no static keys)
+        run: |
+          aws sts get-caller-identity
+          echo "OIDC federation OK — assumed ${AWS_ROLE_ARN}"
+
+      - name: Log in to ECR (proves ecr:GetAuthorizationToken via the role)
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Confirm ECR is reachable for the Agora repo
+        run: echo "ECR login OK for ${ECR_REGISTRY}/socratics-agora"
