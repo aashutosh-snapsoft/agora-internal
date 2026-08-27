@@ -1,0 +1,75 @@
+name: Build and push Agora image to ECR
+
+# Build the Agora image once and push it to the socratics-agora ECR repo, authenticating with the
+# GitHub-OIDC role (no stored AWS keys) proved out by aws-oidc-check.yml. The repo is IMMUTABLE, so we
+# tag by commit SHA only — never `latest` (a mutable tag would collide on the second push, and
+# build-once/promote-by-digest is the Stage 14 model anyway). The pushed digest is surfaced in the job
+# summary; that sha256 is what a deploy overlay pins via image.digest.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+# id-token to mint the OIDC token for the AWS assume; contents:read to check out the source.
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: us-west-2
+  AWS_ROLE_ARN: arn:aws:iam::837567123500:role/github-actions-agora-ecr-push
+  ECR_REGISTRY: 837567123500.dkr.ecr.us-west-2.amazonaws.com
+  ECR_REPOSITORY: socratics-agora
+
+jobs:
+  build-push:
+    name: Build + push (tag by SHA)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+          role-session-name: agora-internal-ecr-push
+
+      - name: Log in to ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push
+        id: build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          # Immutable repo: exactly one tag, the full commit SHA. No :latest.
+          tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
+          # Single-arch, no provenance attestation → one clean image manifest whose digest is what a
+          # deploy overlay promotes. Layer cache via GitHub Actions cache to keep rebuilds cheap.
+          provenance: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          # Public (client-side) build args left at their dev defaults from the Dockerfile; only the
+          # build id / Sentry release are stamped with the commit so /api/version can spot stale deploys.
+          # No secrets are passed as build args (they are runtime-only, per DOCKER_BUILD.md).
+          build-args: |
+            NEXT_PUBLIC_BUILD_ID=${{ github.sha }}
+            SENTRY_RELEASE=${{ github.sha }}
+          # The Dockerfile mounts an optional Sentry token secret; supply it empty so the mount resolves
+          # and the build proceeds without uploading source maps.
+          secrets: |
+            sentry_auth_token=
+
+      - name: Report pushed image
+        run: |
+          echo "Pushed ${ECR_REGISTRY}/${ECR_REPOSITORY}:${GITHUB_SHA}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Digest: ${{ steps.build.outputs.digest }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Pushed ${ECR_REGISTRY}/${ECR_REPOSITORY}:${GITHUB_SHA} @ ${{ steps.build.outputs.digest }}"
