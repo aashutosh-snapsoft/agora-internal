@@ -1,0 +1,1910 @@
+/* Design tokens — scoped to the .demo root so they don't pollute global */
+.demo {
+  --ink: #111827;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --disabled: #9ca3af;
+  --white: #fff;
+  --off: #f6f7f8;
+  --subtle: #f3f4f6;
+  --bgmuted: #e5e7eb;
+  --border: #e5e7eb;
+  --btn: #111827;
+  --btn-hover: #374151;
+  --ai: #3565b5;
+  --ok-ic: #11b886;
+  --ok-bg: #e3fdeb;
+  --ok-stroke: #a3f0cd;
+  --ok-desc: #0b7a5a;
+  --brand: #afff48;
+  --err: #dc2626;
+  --err-bg: #fee2e2;
+  --err-stroke: #fca5a5;
+  --warn-bg: #fffbeb;
+  --warn-stroke: #fde68a;
+  --warn-ic: #d97706;
+  --shadow: 0px 1px 2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 8px 30px rgba(17,24,39,0.10);
+  --font: 'Satoshi Variable', 'Satoshi', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  font-family: var(--font);
+  /* /projects home renders with no dashboard header (suppressed in
+     DashboardLayout), so this fills the full viewport height. */
+  min-height: 100%;
+  background: var(--off);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
+}
+
+.demo *, .demo *::before, .demo *::after {
+  box-sizing: inherit;
+}
+
+/* ─── INTAKE SCREEN ──────────────────────────────────────────────── */
+
+.intakeScreen {
+  /* Own scroll container: html/body are overflow:hidden app-wide, and the demo
+     route renders full-bleed with no layout scroll box around it. */
+  height: 100dvh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 40px 24px 48px;
+  background: var(--off);
+}
+
+.demoCard {
+  width: 100%;
+  max-width: 860px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 32px;
+}
+
+.eyebrow {
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.cardTitle {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  margin: 0 0 8px;
+  line-height: 1.15;
+}
+
+.cardSub {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--muted);
+  line-height: 1.6;
+  margin: 0 0 26px;
+}
+
+/* form field */
+.field {
+  margin-bottom: 18px;
+}
+
+.fieldLabel {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+
+.required {
+  color: #e53e3e;
+  margin-left: 2px;
+}
+
+.fieldInput {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 11px 14px;
+  font-size: 14px;
+  font-family: var(--font);
+  color: var(--ink);
+  outline: none;
+  background: var(--white);
+}
+
+.fieldInput:focus {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 1px var(--ink);
+}
+
+.fieldInput::placeholder {
+  color: var(--disabled);
+  font-weight: 500;
+}
+
+/* Inline validation under the name field, shown only after a submit attempt. */
+.fieldError {
+  margin-top: 6px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--err);
+}
+
+/* Visually hidden, still read by screen readers — the status aria-live region. */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* drag-drop zone */
+.bigdrop {
+  position: relative;
+  border: 1.5px dashed var(--disabled);
+  border-radius: 10px;
+  padding: 28px 24px;
+  text-align: center;
+  cursor: pointer;
+  background: var(--off);
+  transition: border-color 0.12s, background 0.12s;
+  margin-bottom: 16px;
+}
+
+.bigdrop:hover {
+  border-color: var(--muted);
+}
+
+.bigdropActive {
+  border-color: var(--ink);
+  background: #f3f4f6;
+}
+
+.bigdropHasFiles {
+  border-color: var(--ok-ic);
+  border-style: solid;
+  background: var(--ok-bg);
+}
+
+.bdIc {
+  display: block;
+  width: 28px;
+  height: 28px;
+  margin: 0 auto 10px;
+  color: var(--muted);
+  line-height: 1;
+}
+
+.bdTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.bdDesc {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  line-height: 1.5;
+  white-space: nowrap;
+  margin: 0 auto;
+}
+
+.fileInputHidden {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+
+/* staged-file list */
+.uploadList {
+  margin-bottom: 16px;
+}
+
+.uploadListHead {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+/* Caveat that the per-row results are name-based previews, not confirmed reads
+   — the "reads after upload" honesty signal for the analysis stub. */
+.uploadListNote {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  line-height: 1.4;
+  margin-bottom: 10px;
+}
+
+.uploadIcon {
+  flex: none;
+  width: 28px;
+}
+
+.uploadRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--white);
+  margin-bottom: 6px;
+}
+
+
+/* Middle of the row: the filename over its parse-result line. Takes the row's
+   free width; both children truncate rather than wrap. */
+.uploadMeta {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.uploadName {
+  min-width: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Status as the design system's Badge (node 397:46024), sitting at the end of
+   the row — a pale pill carrying the paired background + foreground colours from
+   a tone class below. */
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+  padding: 1px 8px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 16px;
+  white-space: nowrap;
+}
+
+/* DS Badge Status/{bg,fg} pairs. Progress is the neutral Primary pair. */
+.tone_progress { color: #121017; background: #e4e6e8; }
+.tone_success { color: #003d28; background: #e1f7f0; }
+.tone_warning { color: #7a4e00; background: #fff7d8; }
+.tone_error { color: #7f1d1d; background: #fee2e2; }
+
+/* The specifics (sheets, pages, OCR, "no data") beside the badge. */
+.statusDetail {
+  min-width: 0;
+  font-size: 12px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Fixed 60px, right-aligned, tabular figures so the size column forms a clean
+   vertical line and digit widths don't shift the values between rows. */
+.uploadSize {
+  flex: none;
+  width: 60px;
+  text-align: right;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Fixed-width holder for the status pill, wide enough for the longest label
+   shipped ("Needs attention") and right-aligned, so pills — and the size column
+   before them — align regardless of how wide any one label is. */
+.statusCell {
+  flex: none;
+  width: 130px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* The spinner inside a progress badge — rotates via the shared `spin`
+   keyframes; colour inherits from the badge. */
+.statusSpin {
+  display: inline-flex;
+  animation: spin 0.8s linear infinite;
+}
+
+/* Per-row remove (DS trash, node 41214:212). Always visible — muted at rest,
+   darker on hover/focus. 28px hit target; aria-label names the file. */
+.uploadRemove {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--disabled);
+  cursor: pointer;
+  transition: color 0.12s, background 0.12s;
+}
+
+.uploadRemove:hover,
+.uploadRemove:focus-visible {
+  color: var(--err);
+  background: #fdf3f2;
+}
+
+/* A soft-removed row: same footprint, but muted with a dashed border so it reads
+   as "gone but recoverable" while the Undo affordance is available. */
+.uploadRowRemoved {
+  border-style: dashed;
+  background: var(--off);
+}
+
+.removedIcon {
+  flex: none;
+  display: inline-flex;
+  color: var(--disabled);
+}
+
+.removedName {
+  min-width: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.undoBtn {
+  flex: none;
+  padding: 4px 10px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.undoBtn:hover,
+.undoBtn:focus-visible {
+  background: var(--subtle);
+}
+
+/* primary button */
+.btnPrimary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: 100%;
+  padding: 15px 20px;
+  background: var(--btn);
+  color: #fff;
+  border: 0;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.btnPrimary:hover:not(:disabled) {
+  background: var(--btn-hover);
+}
+
+.btnPrimary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btnIntake {
+  width: auto;
+  min-width: 200px;
+  margin: 0 auto;
+  padding: 12px 40px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Explains WHY "Create & start" is greyed out, so the disabled state isn't a
+   silent mystery (issue #2). */
+.intakeHint {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* secondary small button */
+.btnSmall {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  background: var(--white);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: border-color 0.12s;
+  white-space: nowrap;
+}
+
+.btnSmall:hover:not(:disabled) {
+  border-color: var(--muted);
+}
+
+.btnSmall:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btnDanger {
+  color: #c0392b;
+  border-color: #ecc8c3;
+}
+
+.btnDanger:hover:not(:disabled) {
+  border-color: #c0392b;
+  background: #fdf3f2;
+}
+
+/* error and success banners */
+.errorBanner {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--err-bg);
+  border: 1px solid var(--err-stroke);
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--err);
+  margin-bottom: 16px;
+}
+
+.errorBannerClose {
+  background: none;
+  border: 0;
+  color: var(--err);
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  padding: 0;
+  flex: none;
+}
+
+.successBanner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--ok-bg);
+  border: 1px solid var(--ok-stroke);
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ok-desc);
+  margin-bottom: 16px;
+}
+
+/* Neutral — a deliberate stop, not a success (green) or a crash (red). */
+.cancelledBanner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--subtle);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+
+/* Neutral/informational — e.g. "Opens in Ares — coming soon" after a
+ * successful create or an Open-button click. Reuses the cancelledBanner's
+ * neutral (not red, not green) palette: this is a heads-up, not an error and
+ * not a completion state (PR #569 re-review — a successful create was
+ * reusing .errorBanner and visually reading as a failure). */
+.noticeBanner {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--subtle);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+
+.noticeBannerClose {
+  background: none;
+  border: 0;
+  color: var(--text);
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  padding: 0;
+  flex: none;
+}
+
+/* past projects section below the intake card */
+.pastSection {
+  width: 100%;
+  max-width: 860px;
+  margin-top: 26px;
+}
+
+.pastLabel {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--disabled);
+  margin-bottom: 10px;
+  padding-left: 2px;
+}
+
+.pastProject {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  margin-bottom: 8px;
+}
+
+.pastProjectMain {
+  flex: 1;
+  min-width: 0;
+}
+
+.pastProjectName {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: ui-monospace, SFMono-Regular, 'Courier New', monospace;
+}
+
+.pastProjectMeta {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+/* ─── PROCESSING SCREEN ──────────────────────────────────────────── */
+
+.processingScreen {
+  /* Full viewport height — /projects home has no dashboard header (see
+     header) so the page never scrolls; only the chat transcript scrolls. */
+  height: 100dvh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: var(--off);
+}
+
+.procHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 20px;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  flex: none;
+}
+
+.procBrand {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+.procBucket {
+  font-size: 11.5px;
+  color: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, 'Courier New', monospace;
+}
+
+/* Leaving this screen does not stop the run — it's still tracked and resumes
+   on reopen/reload, so this is a plain nav link, not a "cancel" action. */
+.procBack {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  padding: 14px 20px 0;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: var(--font);
+  color: var(--muted);
+  cursor: pointer;
+  align-self: flex-start;
+  flex: none;
+}
+
+.procBack:hover {
+  color: var(--ink);
+}
+
+.procBody {
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  overflow-x: hidden;
+  overflow-y: auto;
+  min-height: 0;
+  padding: 3vh 24px 16px;
+}
+
+/* streaming numbers background */
+.procStream {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  justify-content: space-around;
+  gap: 24px;
+  padding: 0 24px;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0.055;
+  user-select: none;
+}
+
+.procCol {
+  font-family: ui-monospace, SFMono-Regular, 'Courier New', monospace;
+  font-size: 12px;
+  line-height: 1.9;
+  color: var(--ink);
+  text-align: center;
+  animation: streamscroll 20s linear infinite;
+}
+
+.procCol:nth-child(even) {
+  animation-delay: -10s;
+}
+
+.procWrap {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.procCore {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 12px;
+}
+
+.procRing {
+  position: absolute;
+  inset: 0;
+  width: 72px;
+  height: 72px;
+}
+
+.procRingTrack {
+  fill: none;
+  stroke: var(--bgmuted);
+  stroke-width: 3;
+}
+
+.procRingFill {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 80 260;
+  transform-origin: 60px 60px;
+  animation: procspin 7s linear infinite;
+}
+
+.procRingFillDone {
+  fill: none;
+  stroke: var(--brand);
+  stroke-width: 5;
+  stroke-dasharray: 340 0;
+  animation: none;
+  transform-origin: 60px 60px;
+}
+
+.procIcon {
+  font-size: 20px;
+  line-height: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.procStatus {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.procSub {
+  font-size: 12.5px;
+  color: var(--muted);
+  line-height: 1.55;
+  max-width: 380px;
+}
+
+.procTimer {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-top: 12px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.procTimerLbl {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+.procTrouble {
+  margin-top: 14px;
+  font-size: 12px;
+  color: var(--warn-ic);
+  background: var(--warn-bg);
+  border: 1px solid var(--warn-stroke);
+  border-radius: 8px;
+  padding: 8px 14px;
+  max-width: 380px;
+  text-align: center;
+}
+
+.procCancelBtn {
+  margin-top: 14px;
+  padding: 7px 14px;
+  background: transparent;
+  color: #c0392b;
+  border: 1px solid #ecc8c3;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+}
+
+.procCancelBtn:hover:not(:disabled) {
+  background: #fdf1ef;
+  border-color: #c0392b;
+}
+
+.procCancelBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.procStats {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  margin-top: 14px;
+}
+
+/* Chat pinned to the bottom of the processing screen — floating pill composer,
+   free-floating bubbles, no boxed panel (designer reference) */
+.procChat {
+  position: fixed;
+  left: 50%;
+  bottom: 20px;
+  transform: translateX(-50%);
+  width: min(680px, calc(100vw - 32px));
+  text-align: left;
+  z-index: 5;
+}
+
+.procChat .chatSection {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  overflow: visible;
+  margin-bottom: 0;
+}
+
+.procChat .chatHeader {
+  display: none;
+}
+
+.procChat .chatTranscript {
+  max-height: 42vh;
+  padding: 0 4px 12px;
+  background: transparent;
+}
+
+.procChat .chatEmpty {
+  display: none;
+}
+
+.procChat .bubbleAI {
+  background: var(--white);
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.06);
+}
+
+.procChat .bubbleMeta {
+  display: none;
+}
+
+.procChat .chatComposer {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 5px 5px 5px 18px;
+  box-shadow: 0 6px 24px rgba(15, 23, 42, 0.1);
+}
+
+.procChat .composerRow {
+  align-items: center;
+}
+
+.procChat .chatInput {
+  border: none;
+  background: transparent;
+  padding: 8px 0;
+  min-height: 20px;
+}
+
+.procChat .chatInput:focus {
+  border: none;
+  box-shadow: none;
+}
+
+.procChat .chatSend {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.procStat {
+  text-align: center;
+  min-width: 80px;
+}
+
+.psNum {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.psLbl {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+/* done toast — fixed bottom-right */
+.procToast {
+  position: fixed;
+  bottom: 22px;
+  right: 22px;
+  z-index: 70;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 310px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow-lg);
+  padding: 14px 16px;
+  cursor: pointer;
+  animation: toastin 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.ptIc {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--ok-bg);
+  color: var(--ok-ic);
+  display: grid;
+  place-items: center;
+  font-size: 15px;
+  font-weight: 700;
+  flex: none;
+}
+
+.ptTx {
+  flex: 1;
+  min-width: 0;
+}
+
+.ptTitle {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--ink);
+  display: block;
+  margin-bottom: 2px;
+}
+
+.ptSub {
+  font-size: 12px;
+  color: var(--muted);
+  display: block;
+}
+
+/* ─── WORKSPACE SCREEN ───────────────────────────────────────────── */
+
+.workspaceScreen {
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--off);
+}
+
+/* The delete confirmation is a MUI Dialog built from the DS tokens now — see
+   ProjectsWorkspace.tsx. The overlay, card, badge, title, text and danger button
+   rules that used to live here went with it. */
+
+/* ── Projects page (designer reference: card grid) ────────────────────── */
+.projectsPage {
+  width: 100%;
+  max-width: 1240px;
+  padding: 24px 8px;
+}
+
+/* The projects list itself — head, grid and cards — is built from the design
+   system rather than from this stylesheet: essence typography and StatusBadge,
+   the DS button tokens in `@/components/projects/dsTokens`, phosphor icons and
+   `theme.palette` via MUI `sx`. See ProjectsWorkspace.tsx. What is left here is
+   the page shell around it and the intake screen. */
+
+.projectsEmpty {
+  font-size: 13.5px;
+  color: var(--muted);
+  padding: 40px 0;
+  text-align: center;
+}
+
+/* Full-card overlay while a delete is in flight */
+.projDeletingOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border-radius: inherit;
+  background: rgba(255, 255, 255, 0.82);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid var(--bgmuted);
+  border-top-color: var(--ink);
+  animation: spin 0.7s linear infinite;
+  flex: none;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Workspace: sidebar + main split (designer reference) ─────────────── */
+.wsLayout {
+  display: flex;
+  height: 100%;
+  min-height: 0;
+}
+
+.wsSidebar {
+  width: 232px;
+  flex: none;
+  background: var(--white);
+  border-right: 1px solid var(--border);
+  padding: 18px 16px 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.wsBack {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: var(--font);
+  color: var(--muted);
+  cursor: pointer;
+  margin-bottom: 14px;
+  text-align: left;
+}
+
+.wsBack:hover {
+  color: var(--ink);
+}
+
+.wsProjName {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.3;
+  word-break: break-word;
+}
+
+.wsProjMeta {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+.wsSideLabel {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 20px 0 8px;
+}
+
+.wsSideEmpty {
+  font-size: 12px;
+  color: var(--disabled);
+}
+
+.wsSideLabelRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.wsSideLabelRow .wsSideLabel {
+  margin: 20px 0 8px;
+}
+
+.wsDownloadAll {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--font);
+  color: var(--muted);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.wsDownloadAll:hover {
+  color: var(--ink);
+}
+
+.wsSideFile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  font-size: 12.5px;
+  color: var(--text);
+  text-decoration: none;
+  min-width: 0;
+}
+
+.wsSideFile:hover .wsSideName {
+  color: var(--ink);
+  text-decoration: underline;
+}
+
+.wsSideDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ink);
+  flex: none;
+}
+
+.wsSideDotArtifact {
+  background: #d97706;
+}
+
+.wsSideName {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.wsSideActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.wsStartBtn {
+  margin-top: 24px;
+  width: 100%;
+}
+
+.wsMain {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  padding: 24px 32px 32px;
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* The conversation fills the main column — transcript grows, composer at the
+   foot. Matches the designer reference: no boxed panel, floating bubbles,
+   wide white assistant cards, pill composer. */
+.wsMain .chatSection {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  overflow: visible;
+}
+
+.wsMain .chatHeader {
+  display: none;
+}
+
+.wsMain .chatTranscript {
+  flex: 1;
+  min-height: 0;
+  max-height: none;
+  padding: 0 4px 14px;
+  background: transparent;
+}
+
+.wsMain .bubbleAI {
+  background: var(--white);
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05);
+  max-width: 92%;
+}
+
+.wsMain .bubbleMeta {
+  display: none;
+}
+
+.wsMain .chatComposer {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 12px 14px;
+  box-shadow: 0 6px 24px rgba(15, 23, 42, 0.08);
+}
+
+.wsMain .composerRow {
+  align-items: center;
+}
+
+/* Assistant bubbles carry a small brand avatar to their left */
+.wsMain .bubbleAI {
+  position: relative;
+  margin-left: 32px;
+}
+
+.wsMain .bubbleAI::before {
+  content: "S";
+  position: absolute;
+  left: -32px;
+  top: 2px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+}
+
+.wsMain .chatInput {
+  border: none;
+  background: transparent;
+  padding: 8px 0;
+  min-height: 20px;
+}
+
+.wsMain .chatInput:focus {
+  border: none;
+  box-shadow: none;
+}
+
+.wsMain .chatSend {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* Hidden native file input behind the "+ Add file" chip; shows the picked name */
+.wsFileLabel {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.wsFileInput {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.wsPickedFile {
+  font-size: 11.5px;
+  color: var(--muted);
+  margin-top: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.workspaceHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 24px;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  flex: none;
+}
+
+.workspaceBrand {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+.workspaceBucket {
+  font-size: 11.5px;
+  color: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, 'Courier New', monospace;
+}
+
+.headerSpacer {
+  flex: 1;
+}
+
+.workspaceBody {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 28px 24px 48px;
+}
+
+.section {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 22px;
+  margin-bottom: 16px;
+}
+
+.sectionHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.sectionTitle {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.sectionActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* file rows in workspace */
+.fileRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--off);
+  margin-bottom: 7px;
+}
+
+.fileRow:last-child {
+  margin-bottom: 0;
+}
+
+.fileName {
+  flex: 1;
+  min-width: 0;
+  font-size: 12.5px;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: ui-monospace, SFMono-Regular, 'Courier New', monospace;
+}
+
+.fileMeta {
+  font-size: 11px;
+  color: var(--muted);
+  flex: none;
+}
+
+.fileDownload {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ai);
+  text-decoration: none;
+  flex: none;
+}
+
+.fileDownload:hover {
+  text-decoration: underline;
+}
+
+.emptyHint {
+  font-size: 13px;
+  color: var(--muted);
+  text-align: center;
+  padding: 14px 0;
+}
+
+/* workspace file upload strip */
+.uploadStrip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.nativeFileInput {
+  font-size: 12px;
+  color: var(--muted);
+  max-width: 180px;
+}
+
+/* start processing CTA */
+.startCta {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* progress bar */
+.progressTrack {
+  height: 4px;
+  background: var(--bgmuted);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.progressBar {
+  height: 100%;
+  background: var(--ink);
+  border-radius: 2px;
+  animation: indeterminate 1.4s ease-in-out infinite;
+  transform-origin: left;
+}
+
+/* ─── QUESTIONS CALLOUT ──────────────────────────────────────────── */
+
+.questionsSection {
+  background: var(--warn-bg);
+  border: 1px solid var(--warn-stroke);
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-bottom: 16px;
+}
+
+.questionsTitle {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+
+.questionsNote {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+.questionItem {
+  display: flex;
+  gap: 10px;
+  padding: 8px 0;
+  border-top: 1px solid var(--warn-stroke);
+  font-size: 12.5px;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.questionTime {
+  color: var(--muted);
+  font-size: 11px;
+  white-space: nowrap;
+  flex: none;
+  margin-top: 2px;
+}
+
+/* ─── CHAT ───────────────────────────────────────────────────────── */
+
+.chatSection {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+.chatHeader {
+  padding: 14px 20px 12px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--ink);
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.chatHeaderSub {
+  font-size: 11.5px;
+  color: var(--muted);
+  font-weight: 500;
+  font-family: ui-monospace, SFMono-Regular, 'Courier New', monospace;
+}
+
+.chatTranscript {
+  max-height: 380px;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chatEmpty {
+  font-size: 13px;
+  color: var(--muted);
+  text-align: center;
+  padding: 16px 0;
+}
+
+.bubbleUser {
+  align-self: flex-end;
+  max-width: 74%;
+  padding: 10px 14px;
+  background: var(--ink);
+  color: #fff;
+  border-radius: 14px 14px 4px 14px;
+}
+
+.bubbleAI {
+  align-self: flex-start;
+  max-width: 74%;
+  padding: 10px 14px;
+  background: var(--subtle);
+  color: var(--ink);
+  border-radius: 14px 14px 14px 4px;
+  border: 1px solid var(--border);
+}
+
+.bubbleText {
+  font-size: 13px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Markdown rendering inside assistant bubbles (react-markdown output) */
+.bubbleText p {
+  margin: 0 0 8px;
+  white-space: normal;
+}
+
+.bubbleText p:last-child {
+  margin-bottom: 0;
+}
+
+.bubbleText ul,
+.bubbleText ol {
+  margin: 6px 0;
+  padding-left: 20px;
+  white-space: normal;
+}
+
+.bubbleText li {
+  margin: 3px 0;
+}
+
+.bubbleText code {
+  background: var(--subtle);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-family: ui-monospace, SFMono-Regular, 'Courier New', monospace;
+  font-size: 12px;
+}
+
+.bubbleText pre {
+  background: var(--subtle);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  overflow-x: auto;
+  margin: 8px 0;
+  white-space: pre;
+}
+
+.bubbleText pre code {
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.bubbleText table {
+  border-collapse: collapse;
+  margin: 8px 0;
+  font-size: 12px;
+  white-space: normal;
+  display: block;
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.bubbleText th,
+.bubbleText td {
+  border: 1px solid var(--border);
+  padding: 5px 10px;
+  text-align: left;
+}
+
+.bubbleText th {
+  background: var(--subtle);
+  font-weight: 600;
+}
+
+.bubbleText h1,
+.bubbleText h2,
+.bubbleText h3,
+.bubbleText h4 {
+  font-size: 13.5px;
+  font-weight: 700;
+  margin: 10px 0 6px;
+  white-space: normal;
+}
+
+.bubbleText blockquote {
+  border-left: 3px solid var(--border);
+  margin: 8px 0;
+  padding: 2px 12px;
+  color: var(--muted);
+}
+
+.bubbleText a {
+  color: var(--ai);
+  word-break: break-all;
+}
+
+.bubbleText hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 10px 0;
+}
+
+.bubbleMeta {
+  font-size: 10.5px;
+  opacity: 0.55;
+  margin-top: 5px;
+}
+
+.systemLine {
+  align-self: center;
+  text-align: center;
+  font-family: ui-monospace, SFMono-Regular, 'Courier New', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  padding: 2px 10px;
+}
+
+.systemLineError {
+  color: var(--err);
+}
+
+.systemLineWarn {
+  color: var(--warn-ic);
+}
+
+/* Presentation-gate message types: open_items + deliverable cards */
+
+.openItemsCard {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.openItemsTitle {
+  font-weight: 600;
+}
+
+.openItemsList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.openItemRow {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  background: #fff;
+}
+
+.openItemName {
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.openItemDoc {
+  color: var(--muted);
+  font-size: 12px;
+  margin-bottom: 2px;
+}
+
+.openItemImpact {
+  font-size: 12px;
+}
+
+.deliverableCard {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.deliverableLink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  background: #fff;
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.deliverableLink:hover {
+  border-color: var(--ai);
+}
+
+.deliverableName {
+  font-weight: 600;
+}
+
+.deliverableOpen {
+  color: var(--ai);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.chatComposer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--border);
+}
+
+.composerRow {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  width: 100%;
+}
+
+.chipRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  border: 1px solid var(--border);
+  background: var(--white);
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-size: 12.5px;
+  font-weight: 500;
+  font-family: var(--font);
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color 0.12s;
+  white-space: nowrap;
+}
+
+.chip:hover:not(:disabled) {
+  border-color: var(--muted);
+}
+
+.chip:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.chatInput {
+  flex: 1;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 9px 13px;
+  font-size: 13px;
+  font-family: var(--font);
+  color: var(--ink);
+  outline: none;
+  resize: none;
+  min-height: 40px;
+  max-height: 120px;
+  line-height: 1.5;
+  background: var(--white);
+}
+
+.chatInput:focus {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 1px var(--ink);
+}
+
+.chatInput::placeholder {
+  color: var(--disabled);
+}
+
+.chatSend {
+  padding: 9px 18px;
+  background: var(--btn);
+  color: #fff;
+  border: 0;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: background 0.12s;
+  white-space: nowrap;
+  flex: none;
+}
+
+.chatSend:hover:not(:disabled) {
+  background: var(--btn-hover);
+}
+
+.chatSend:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ─── KEYFRAMES ──────────────────────────────────────────────────── */
+
+@keyframes procspin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes toastin {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes streamscroll {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-50%); }
+}
+
+@keyframes indeterminate {
+  0%   { transform: scaleX(0) translateX(0); }
+  50%  { transform: scaleX(0.6) translateX(120%); }
+  100% { transform: scaleX(0) translateX(400%); }
+}

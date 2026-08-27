@@ -1,0 +1,22 @@
+{
+  "usesTypeScript": true,
+  "usesStyledComponents": true,
+  "testLibrary": "None",
+  "component": {
+    "default": {
+      "path": "src/components",
+      "withStyle": false,
+      "withTest": false,
+      "withStory": true,
+      "withLazy": true,
+      "withTypes": true,
+      "customTemplates": {
+        "component": "templates/components/templatename.tsx",
+        "test": "templates/components/templatename.test.tsx",
+        "story": "templates/components/templatename.stories.tsx",
+        "lazy": "templates/components/templatename.lazy.tsx",
+        "types": "templates/components/templatename.types.ts"
+      }
+    }
+  }
+}

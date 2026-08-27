@@ -1,0 +1,144 @@
+.ag-root>.ag-header {
+  background-color: unset;
+  border-bottom: 4px solid #000000;
+  border-top: 0px;
+  border-left: 0px;
+  border-right: 0px;
+}
+
+div.ag-theme-quartz>div>.ag-root-wrapper {
+  border: 0px;
+}
+
+.modal-content-wrapper .ag-root-wrapper {
+  z-index: 0 !important;
+}
+
+.ag-header-cell-label {
+  font-size: 0.75rem !important;
+}
+
+/* This is the unit column */
+.ag-unit-cell {
+  color: #888888;
+  width: 100%;
+  text-align: right;
+}
+
+
+div.ag-header-cell-label[data-col-id="unit"] {
+  justify-content: flex-end;
+  justify-items: flex-end;
+  width: 100%;
+}
+
+/* Set all columns to be right aligned except for the first 2 */
+.ag-row>.ag-cell:not(:nth-child(-n + 2)) {
+  text-align: right;
+}
+
+/* Set all columns to be right aligned except for the first 2 */
+div.ag-cell-label-container>div.ag-header-cell-label {
+  flex: unset;
+}
+
+
+
+/* Replace with this to properly target the first 2 header cells */
+.ag-header-row>.ag-header-cell:nth-child(-n + 1)>.ag-header-cell-comp-wrapper>.ag-cell-label-container>.ag-header-cell-label {
+  flex: 1 1 auto;
+}
+
+.ag-center-cols-container {
+  width: auto !important;
+}
+
+.custom-cell>span {
+  height: 100%;
+  vertical-align: middle;
+  line-height: calc(var(--height) - 1px);
+}
+
+.ag-theme-quartz .ag-row {
+  border-bottom: none;
+}
+
+/* Task 4: Row hover to match Financial Model table */
+/* Override AG Grid's hover CSS variable */
+.ag-theme-quartz {
+  --ag-row-hover-color: #f5f5f5;
+}
+
+.ag-theme-quartz .ag-row:hover,
+.ag-theme-quartz .ag-row-hover {
+  background-color: #f5f5f5 !important;
+}
+
+/* Override AG Grid's default row hover pseudo-element */
+.ag-theme-quartz .ag-row-hover::before {
+  background-color: #f5f5f5 !important;
+}
+
+/* Task 3: Change period cell text color to platform standard */
+.ag-theme-quartz .ag-row .ag-period-cell {
+  color: #111827;
+  justify-content: flex-end;
+}
+
+.ag-theme-quartz .ag-cell {
+  border-bottom: var(--ag-row-border-style) var(--ag-row-border-color) var(--ag-row-border-width);
+}
+
+/* Cell content font size */
+.ag-theme-quartz .ag-cell-value {
+  font-size: 12px;
+}
+
+/* Task 5: Remove blue focus/selection border on cells */
+.ag-theme-quartz .ag-cell-focus,
+.ag-theme-quartz .ag-cell:focus {
+  border: none !important;
+  outline: none !important;
+}
+
+.ag-theme-quartz .ag-row-focus,
+.ag-theme-quartz .ag-row:focus {
+  outline: none !important;
+}
+
+.ag-theme-quartz .ag-cell-range-selected:not(.ag-cell-focus) {
+  background-color: transparent !important;
+}
+
+.ag-theme-quartz .ag-ltr .ag-cell-focus:not(.ag-cell-range-selected):focus-within {
+  border: none !important;
+  outline: none !important;
+}
+
+.ag-floating-bottom-viewport {
+  border-top: 1px solid var(--Colors-Text-Text-Primary, #111827);
+  font-weight: 700;
+  border-bottom: 1px solid var(--Colors-Text-Text-Primary, #111827);
+}
+
+.sum-row .ag-period-cell {
+  color: var(--Colors-Text-Text-Primary, #111827) !important;
+}
+
+.sum-row.ag-row-hover::before {
+  content: none !important;
+  background-color: transparent !important;
+}
+
+.ag-line-item-cell {
+  width: auto;
+}
+
+.ag-body {
+  max-height: fit-content;
+}
+
+.ag-row {
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+}

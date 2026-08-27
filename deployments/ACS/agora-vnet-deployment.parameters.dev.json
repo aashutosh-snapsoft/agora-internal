@@ -1,0 +1,60 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "containerAppName": {
+      "value": "agora-ergon-dev"
+    },
+    "environment": {
+      "value": "dev"
+    },
+    "containerAppsEnvironmentId": {
+      "value": ""
+    },
+    "containerImage": {
+      "value": "socraticsprodacr.azurecr.io/agora:dev-latest"
+    },
+    "acrServer": {
+      "value": "socraticsprodacr.azurecr.io"
+    },
+    "acrUsername": {
+      "value": ""
+    },
+    "acrPassword": {
+      "value": ""
+    },
+    "logosApiUrl": {
+      "value": ""
+    },
+    "hasuraAdminSecret": {
+      "value": ""
+    },
+    "auth0ClientSecret": {
+      "value": ""
+    },
+    "appUrl": {
+      "value": "https://app.dev.socratics.ai"
+    },
+    "graphqlUrl": {
+      "value": "https://socraticsai-dev.hasura.app/v1/graphql"
+    },
+    "auth0Domain": {
+      "value": "https://auth.dev.socratics.ai"
+    },
+    "auth0ClientId": {
+      "value": "qCqdKXa2pUDbcNNMU4OlNxLHQB8Avkpr"
+    },
+    "auth0RedirectUri": {
+      "value": "https://app.dev.socratics.ai/api/auth/callback"
+    },
+    "auth0Audience": {
+      "value": "https://socraticsai-dev.hasura.app/v1/graphql"
+    },
+    "gaMeasurementId": {
+      "value": "G-WZW2HD7YN3"
+    },
+    "amplitudeApiKey": {
+      "value": "f080defbddd57e2b7d031eb8973f87a"
+    }
+  }
+}

@@ -1,0 +1,231 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/satoshi/Satoshi-Regular.woff2') format('woff2'),
+    url('/fonts/satoshi/Satoshi-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/satoshi/Satoshi-Bold.woff2') format('woff2'),
+    url('/fonts/satoshi/Satoshi-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Define Satoshi Variable font */
+@font-face {
+  font-family: 'Satoshi Variable';
+  src: url('/fonts/satoshi/Satoshi-Variable.woff2') format('woff2'),
+    url('/fonts/satoshi/Satoshi-Variable.woff') format('woff');
+  font-weight: 300 900;
+  /* This allows the full range of weights */
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --background: #fdfdff;
+  --foreground: #171717;
+  --font-satoshi: 'Satoshi', sans-serif;
+  --font-satoshi-variable: 'Satoshi Variable', sans-serif;
+}
+
+html,
+body {
+  height: 100%;
+  /* Prevent an unnecessary "outer" page scrollbar. Scrolling should happen in the app's
+     designated content containers.*/
+  overflow: hidden;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-satoshi-variable) !important;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+.MuiBox-root>.MuiContainer-root {
+  max-width: unset;
+  margin-left: 0px;
+  margin-right: 0px;
+  padding-left: 1rem;
+  padding-right: 0px;
+}
+
+/* .MuiPaper-root {
+  margin-left: 1rem;
+  margin-right: 1rem;
+} */
+
+.feature-active {
+  box-sizing: border-box;
+  border-bottom: 2px solid #000000;
+}
+
+* {
+  scroll-behavior: auto !important;
+  font-family: var(--font-satoshi-variable) !important;
+}
+
+@keyframes fade {
+
+  0%,
+  100% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+.fade-in-and-out {
+  animation: fade 2s ease-in-out infinite;
+}
+
+/* -- AI Chat Message animations -- */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.chat-container {
+  position: relative;
+  overflow-y: scroll;
+  scrollbar-gutter: stable;
+}
+
+.chat-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.chat-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chat-container::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.10);
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  -webkit-transition: all 0.3s ease;
+}
+
+.chat-container:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.10);
+}
+
+.chat-container::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
+.chat-message {
+  position: relative;
+  transform-origin: top;
+  animation: messageAppear 0.3s ease-out forwards;
+}
+
+@keyframes messageAppear {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.chat-message-moving {
+  animation: slideUp 0.3s ease-out;
+}
+
+.chat-message-markdown {
+  font-family: var(--font-satoshi-variable) !important;
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 450;
+}
+
+/* -- Projects list scrollbar (projects page table container) -- */
+.projects-container .MuiTableContainer-root {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: #d1d5db transparent; /* Firefox: thumb track */
+}
+
+.projects-container .MuiTableContainer-root::-webkit-scrollbar {
+  width: 10px;
+}
+
+.projects-container .MuiTableContainer-root::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.projects-container .MuiTableContainer-root::-webkit-scrollbar-thumb {
+  background-color: #d1d5db;
+  border-radius: 6px;
+  border: 2px solid transparent; /* creates padding around thumb */
+  background-clip: content-box;
+}
+
+.projects-container .MuiTableContainer-root::-webkit-scrollbar-thumb:hover {
+  background-color: #cbd5e1;
+}
+
+.modal-content-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+.modal-loader-wrapper {
+  position: absolute;
+  inset: 0;
+  z-index: 9999;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  max-width: 100%;
+  pointer-events: all;
+  isolation: isolate;
+}
+
+.progress-container {
+  position: relative;
+  width: 120px;
+  height: 120px;
+}
+
+.progress-message {
+  margin-top: 20px;
+  font-size: 15px;
+  color: #111827;
+  font-weight: 600;
+}
+
+.stepContent.isSaving {
+  overflow: hidden !important;
+}

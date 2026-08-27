@@ -1,0 +1,84 @@
+"use client";
+
+import { Box, styled, keyframes } from "@mui/material";
+
+// socratics spinner logo loader
+const loader = keyframes`
+  0% {
+    -webkit-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }`;
+
+// STYLED COMPONENT
+const RootStyle = styled(Box)(({ theme }) => ({
+	top: 0,
+	left: 0,
+	width: "100%",
+	height: "100%",
+	display: "grid",
+	position: "fixed",
+	placeItems: "center",
+	backgroundColor: theme.palette.background.default,
+
+	"#loading-content": {
+		width: 170,
+		height: 170,
+		borderRadius: "50%",
+		position: "relative",
+		border: "5px solid transparent",
+		borderTopColor: theme.palette.primary[300],
+		borderBottomColor: theme.palette.primary[300],
+		animation: `${loader} 2s ease-in-out infinite`,
+
+		"&:after": {
+			inset: 15,
+			content: "''",
+			position: "absolute",
+			border: "5px solid transparent",
+			borderTopColor: theme.palette.primary[100],
+			borderBottomColor: theme.palette.primary[100],
+			animation: `${loader} 1.5s ease-in-out infinite`,
+			borderRadius: "50%",
+		},
+		"&:before": {
+			inset: 5,
+			content: "''",
+			borderRadius: "50%",
+			position: "absolute",
+			border: "5px solid transparent",
+			borderTopColor: theme.palette.primary[200],
+			borderBottomColor: theme.palette.primary[200],
+			animation: `${loader} 3s ease-in-out infinite`,
+		},
+	},
+
+	".logo": {
+		inset: 0,
+		width: 90,
+		height: 90,
+		margin: "auto",
+		display: "grid",
+		borderRadius: "50%",
+		placeItems: "center",
+		position: "absolute",
+		img: { width: "100%", height: "100%" },
+	},
+}));
+
+const LoaderWithLogo = () => (
+	<RootStyle id="loading-wrapper">
+		<div className="logo">
+			<img src="/static/logo/socratics-icon.png" alt="essence" />
+		</div>
+
+		<div id="loading-content"></div>
+	</RootStyle>
+);
+
+export default LoaderWithLogo;

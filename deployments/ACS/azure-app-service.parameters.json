@@ -1,0 +1,21 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "appServiceName": {
+      "value": "agora-prod-app"
+    },
+    "location": {
+      "value": "westus2"
+    },
+    "environment": {
+      "value": "production"
+    },
+    "skuName": {
+      "value": "P1v3"
+    },
+    "customHostname": {
+      "value": "app.socratics.ai"
+    }
+  }
+}

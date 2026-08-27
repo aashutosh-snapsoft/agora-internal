@@ -1,0 +1,29 @@
+services:
+  agora:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3010:3000"
+    volumes:
+      - ./.env.development.local:/app/.env.local
+    env_file:
+      - ./.env.development.local
+    environment:
+      - AUTH0_SECRET
+      - AUTH0_BASE_URL
+      - AUTH0_ISSUER_BASE_URL
+      - AUTH0_CLIENT_ID
+      - AUTH0_CLIENT_SECRET
+      - AUTH0_AUDIENCE
+      - HASURA_ADMIN_SECRET
+      - NEXT_PUBLIC_URL
+      - NEXT_PUBLIC_LOGOS_URL
+      - NEXT_PUBLIC_GRAPHQL_URL
+      - NEXT_PUBLIC_HASURA_WS_URL
+      - NEXT_PUBLIC_AUTH0_DOMAIN
+      - NEXT_PUBLIC_AUTH0_CLIENT_ID
+      - NEXT_PUBLIC_AUTH0_AUDIENCE
+      - NEXT_PUBLIC_GA_MEASUREMENT_ID
+      - NEXT_PUBLIC_AMPLITUDE_API_KEY
+    restart: unless-stopped

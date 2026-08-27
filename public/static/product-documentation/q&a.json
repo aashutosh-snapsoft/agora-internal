@@ -1,0 +1,109 @@
+{
+  "title": "SocraticsAI Support FAQ",
+  "sections": [
+    {
+      "id": "getting-started",
+      "title": "Getting Started",
+      "questions": [
+        {
+          "id": "what-does-socraticsai-do",
+          "question": "What does SocraticsAI do?",
+          "answer": "SocraticsAI automatically ingests and classifies raw financial statements from accounting systems like QuickBooks, NetSuite, or Xero, then creates standardized summary rollups - eliminating manual Excel work. Export to Excel with historicals, forecasts, valuation, and KPIs ready for your workflow."
+        },
+        {
+          "id": "basic-workflow",
+          "question": "What's the basic workflow?",
+          "answer": "The process is simple: 1) Upload Excel file → 2) System ingests and classifies data → 3) Review \"Reported\" tab → 4) Validate data → 5) Export complete model."
+        }
+      ]
+    },
+    {
+      "id": "file-requirements",
+      "title": "File Requirements & Best Practices",
+      "questions": [
+        {
+          "id": "supported-file-types",
+          "question": "What file types and formats do you support?",
+          "answer": "Currently supported:\n• Excel files with raw financial statements from accounting systems\n• CPA-prepared statements (compiled/reviewed)\n• Internal accounting reports\n• Monthly and annual data (any fiscal year format)\n• Coming soon: PDF support in the next few weeks.\n\nNot supported yet: Quarterly data, trial balances, FP&A models, or pre-built financial analysis."
+        },
+        {
+          "id": "file-preparation-best-practices",
+          "question": "What are the file preparation best practices?",
+          "answer": "To ensure smooth processing:\n• Remove password protection and external workbook references\n• Format numbers as numbers (not text) and use consistent date formats\n• Remove merged cells, conditional formatting, and hidden rows/columns with data\n• Verify balance sheet balances and use clear sheet names\n• Keep a backup copy\n\nOver time, there will be fewer guardrails as we improve our system."
+        },
+        {
+          "id": "upload-requirements",
+          "question": "What are the upload requirements?",
+          "answer": "Your file must include:\n• Income statement and balance sheet on separate sheets within the workbook\n• Acceptable sheet names (standard naming like \"Income Statement,\" \"P&L,\" \"Balance Sheet\")\n• Identical time periods between statements in chronological order (oldest left, newest right)\n• All data hard-coded or referencing only the uploaded workbook (no external workbook references)\n• Historical data only (no forecasts or projections)\n• Text and numbers only (no graphs, charts, or visual elements)"
+        },
+        {
+          "id": "remove-hidden-xlsx-sheets",
+          "question": "How do I remove a hidden sheet from an Excel (.xlsx) file?",
+          "answer": "Before uploading, open the workbook in Excel and remove any hidden worksheets:\n1. Right-click any sheet tab at the bottom of the workbook.\n2. Select Unhide to see hidden sheets.\n3. Unhide each hidden sheet you find.\n4. If a hidden sheet is not needed, right-click its tab and choose Delete. If it is needed, move the required data into a visible sheet.\n5. Save the workbook as an .xlsx file and upload the updated version.\n\nIf workbook structure protection is enabled, go to Review → Protect Workbook and remove protection before trying to unhide or delete sheets."
+        }
+      ]
+    },
+    {
+      "id": "data-processing-validation",
+      "title": "Data Processing & Validation",
+      "questions": [
+        {
+          "id": "unrecognized-line-items",
+          "question": "The system didn't recognize some line items (gray question marks). What should I do?",
+          "answer": "Ensure your file contains these core items:\n• Total Revenue/Income/Sales\n• Gross Profit\n• Net Income\n• Total Assets\n• Total Liabilities\n• Total Equity\n\nThe system may struggle with highly specific or abbreviated line item names. You can manually classify these in the \"Reported\" tab Column C."
+        },
+        {
+          "id": "validation-inconsistencies",
+          "question": "The validation shows inconsistencies. How do I fix this?",
+          "answer": "The Validation tab compares your input data with our classified totals. Use the Analysis below the validation table to compare the \"Reported\" tab to your original financials. Fix by editing the \"Reported\" tab:\n• Reclassify items to correct categories (Column C)\n• Invert signs if expense/revenue recording differs\n• Hide/unhide items as needed"
+        },
+        {
+          "id": "reported-tab-contents",
+          "question": "What's in the Reported tab?",
+          "answer": "The Reported tab contains:\n• Column A: Standardized classifications from your raw data\n• Column C: Reclassification dropdown for manual adjustments\n• Time periods: Your data in standardized format\n• Hide/Unhide: Control final export contents"
+        }
+      ]
+    },
+    {
+      "id": "excel-export-troubleshooting",
+      "title": "Excel Export & Troubleshooting",
+      "questions": [
+        {
+          "id": "excel-export-contents",
+          "question": "What's included in my Excel export?",
+          "answer": "Your export includes clean financial statements, historicals, forecasting models, valuation frameworks, KPI dashboards, and professional formatting ready for analysis."
+        },
+        {
+          "id": "blank-cells-with-formulas",
+          "question": "My Excel export has blank cells with formulas. How do I fix this?",
+          "answer": "Enable iterative calculations: File → Options → Formulas → Enable iterative calculation."
+        },
+        {
+          "id": "excel-performance-issues",
+          "question": "Excel is running slow or lagging. What can I do?",
+          "answer": "Performance issues are likely due to multiple data tables in DCF and LBO sheets. Fix by:\n• Deleting the data tables, or\n• Changing calculations from \"Automatic\" to \"Manual\" mode\n\nContact us for persistent performance issues."
+        },
+        {
+          "id": "modify-classifications-excel",
+          "question": "Can I modify classifications in Excel?",
+          "answer": "Yes, but it's currently manual (future versions will automate this).\n\nTo Rename: Go to \"Config\" tab, find the classification, use Find & Replace across the entire workbook.\n\nTo Add:\n• \"Config\" tab: Add new line to classification section (Column A) and statement location (Column B)\n• \"Reported\" tab: Use Column C to reclassify items to your new classification\n• For Monthly Data: Update \"Monthly Financials\" tab (insert row, copy SUMIFS formulas), \"Inputs\" tab (create forecast driver), and \"Annual Financials\" tab\n• For Annual Data: Update \"Annual Financials\" tab (insert row, copy SUMIFS formulas) and \"Inputs\" tab\n\nTo Delete: \"Config\" tab to reclassify items, then delete corresponding rows from \"Monthly Financials\" and \"Annual Financials\" tabs."
+        },
+        {
+          "id": "change-forecast-drivers",
+          "question": "Can I change forecast drivers in the web app?",
+          "answer": "Not currently, but this is planned for our roadmap. In our MVP, we provide prepopulated default drivers that you can modify after exporting to Excel."
+        },
+        {
+          "id": "update-existing-project",
+          "question": "Can I update an existing project?",
+          "answer": "Document merging is on our roadmap but not currently supported. To update data, re-upload your complete financials with the additional data included."
+        },
+        {
+          "id": "troubleshooting-hierarchy",
+          "question": "What's the troubleshooting hierarchy?",
+          "answer": "Follow these steps in order:\n• Check Validation tab for errors\n• Review \"Reported\" tab classifications\n• Ensure required line items are present\n• Check Excel formulas after export\n• Contact us for performance issues"
+        }
+      ]
+    }
+  ]
+}

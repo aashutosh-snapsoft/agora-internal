@@ -1,0 +1,15 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "_comment1": "This is a template file. All parameters are passed via environment variables in deploy-agora.sh",
+    "_comment2": "GitHub Actions should set environment variables instead of modifying this file",
+    "_comment3": "Required GitHub secrets (DEV_ prefix for dev environment):",
+    "_comment4": "  DEV_ACR_PASSWORD, DEV_HASURA_ADMIN_SECRET, DEV_AUTH0_CLIENT_SECRET, DEV_NEXT_SERVER_ACTIONS_ENCRYPTION_KEY",
+    "_comment5": "Required GitHub variables (DEV_ prefix for dev environment):",
+    "_comment6": "  DEV_RESOURCE_GROUP, DEV_LOCATION, DEV_CONTAINER_APP_NAME, DEV_CONTAINER_IMAGE,",
+    "_comment7": "  DEV_ACR_SERVER, DEV_ACR_USERNAME, DEV_NEXT_PUBLIC_LOGOS_URL, DEV_NEXT_PUBLIC_GRAPHQL_URL,",
+    "_comment8": "  DEV_NEXT_PUBLIC_AUTH0_DOMAIN, DEV_NEXT_PUBLIC_AUTH0_CLIENT_ID, DEV_NEXT_PUBLIC_AUTH0_AUDIENCE,",
+    "_comment9": "  DEV_NEXT_PUBLIC_GA_MEASUREMENT_ID, DEV_NEXT_PUBLIC_AMPLITUDE_API_KEY"
+  }
+}

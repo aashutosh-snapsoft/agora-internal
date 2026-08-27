@@ -1,0 +1,69 @@
+---
+- name: Deploy agora Docker service
+  hosts: agora
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  become: yes
+  tasks:
+  
+    # Step 2: Authenticate Docker with GCP Artifact Registry
+    - name: Authenticate Docker with Artifact Registry
+      shell: >
+        yes | gcloud auth configure-docker us-west1-docker.pkg.dev
+      register: gcr_login
+      environment:
+        GOOGLE_APPLICATION_CREDENTIALS: "{{ gcp_credentials_file }}"
+      # ignore_errors: yes
+      
+    # Step 3: Pull the Docker image from Artifact Registry
+    - name: Pull agora Docker image from Artifact Registry
+      docker_image:
+        name: "us-west1-docker.pkg.dev/{{ gcp_project_id }}/frontend-registry/agora"
+        tag: "latest" 
+        force_source: yes
+        source: pull
+
+    # New Step: Stop and remove existing container
+    - name: Stop and remove existing agora container
+      docker_container:
+        name: agora
+        state: absent
+        force_kill: yes
+
+    # Step 4: Ensure agora container is running
+    - name: Run agora container
+      docker_container:
+        name: agora
+        image: "us-west1-docker.pkg.dev/{{ gcp_project_id }}/frontend-registry/agora:latest"
+        state: started
+        restart_policy: always
+        networks:
+          - name: web
+        ports:
+          - "3000:3000"  # Expose port 3000
+        labels:
+          traefik.enable: "true"
+          traefik.http.routers.agora.rule: "Host(`app.socratics.ai`) || Host(`agora.socratics.ai`)"
+          traefik.http.routers.agora.entrypoints: "websecure"
+          traefik.http.routers.agora.tls.certresolver: "letsencrypt"
+          traefik.http.services.agora.loadbalancer.server.port: "3000"
+        env:
+          NEXT_PUBLIC_GRAPHQL_URL: "{{ HASURA_DEV_ENDPOINT }}"
+          NEXT_PUBLIC_HASURA_WS_URL: "{{ HASURA_DEV_WS_ENDPOINT | default('') }}"
+          NEXT_PUBLIC_AUTH0_DOMAIN: "{{NEXT_PUBLIC_AUTH0_DOMAIN}}"
+          NEXT_PUBLIC_AUTH0_CLIENT_ID: "{{NEXT_PUBLIC_AUTH0_CLIENT_ID}}"
+          NEXT_PUBLIC_AUTH0_REDIRECT_URI: "{{NEXT_PUBLIC_AUTH0_REDIRECT_URI}}"
+          NEXT_PUBLIC_AUTH0_AUDIENCE: "{{NEXT_PUBLIC_AUTH0_AUDIENCE}}"
+          NEXT_PUBLIC_GA_MEASUREMENT_ID: "{{NEXT_PUBLIC_GA_MEASUREMENT_ID}}"
+          
+
+    # Step 5: Health check configuration (if applicable)
+    - name: Configure health check
+      uri:
+        url: "http://localhost:3000"
+        method: GET
+        status_code: 200
+      register: health_check
+      retries: 5
+      delay: 30  # Retry every 30 seconds
+      until: health_check.status == 200

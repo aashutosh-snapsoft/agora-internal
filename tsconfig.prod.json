@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.dev.json",
+  "compilerOptions": {
+    "incremental": false, // Disable incremental builds for production
+    "skipDefaultLibCheck": true, // Skip default lib checks for faster builds
+    "target": "es6", // Specify a target if possible
+    "noEmit": false // Ensure output files are generated
+  }
+}

@@ -1,0 +1,167 @@
+{
+  "upload": {
+    "questions": [
+      {
+        "id": "upload-1",
+        "question": "What file types are supported?",
+        "answer": "Currently supported:\n• Excel files (typically downloaded from QuickBooks, NetSuite, Xero, or an internal accounting system)\n• CPA-prepared compiled/reviewed statements\n• Monthly or annual data (any fiscal year)\n• Tax financials\n\nPDF support is coming soon."
+      },
+      {
+        "id": "upload-2",
+        "question": "How should I prepare my file?",
+        "answer": "• Remove password protection and any external workbook references.\n• Ensure all values are formatted as numbers (not text) and use consistent date formats.\n• Remove merged cells, conditional formatting, and any hidden rows or columns containing data.\n• Confirm that the Balance Sheet balances and that worksheet names are clear and descriptive.\n• Keep a backup copy of your original file before uploading."
+      },
+      {
+        "id": "upload-3",
+        "question": "What are the upload requirements?",
+        "answer": "• Income statement and balance sheet on separate sheets within the workbook.\n• Standard sheet names like \"Income Statement,\" \"P&L,\" or \"Balance Sheet.\"\n• Matching time periods (oldest left → newest right).\n• Hard-coded data only.\n• Historical data only (no forecasts or projections).\n• Text and numbers only (no graphs, charts, or visual elements)."
+      },
+      {
+        "id": "upload-4",
+        "question": "What can I do if errors appear while checking document requirements?",
+        "answer": "Errors usually occur when the file doesn't meet the required criteria. Review the requirements, update your file in Excel, and re-upload the corrected version."
+      },
+      {
+        "id": "upload-5",
+        "question": "I uploaded the wrong file. What should I do?",
+        "answer": "If the upload has already started, it cannot be canceled. Close the current modal, navigate to the Projects section, find the project, and delete it. You can then upload the correct file."
+      },
+      {
+        "id": "upload-6",
+        "question": "How do I remove a hidden sheet from an Excel (.xlsx) file?",
+        "answer": "Open the workbook in Excel and check for hidden worksheets before uploading.\n\n1. Right-click any sheet tab at the bottom of the workbook.\n2. Select Unhide and review the list of hidden sheets.\n3. Unhide each hidden sheet you find.\n4. If the sheet is not needed, right-click the sheet tab and choose Delete. If it is needed, move the required data into a visible sheet instead of leaving it hidden.\n5. Save the workbook as an .xlsx file and re-upload it.\n\nIf the workbook structure is protected, first go to Review → Protect Workbook and remove protection before unhiding or deleting sheets."
+      }
+    ]
+  },
+  "income-statement": {
+    "questions": [
+      {
+        "id": "is-1",
+        "question": "What is Validation?",
+        "answer": "The Validation section compares your input data to our classified totals."
+      },
+      {
+        "id": "is-2",
+        "question": "Why are some values flagged in the Validation section?",
+        "answer": "The Validation section compares values from your uploaded Excel financials with the extracted data and Socratics.ai's calculations. Values are flagged when inconsistencies or mismatches are detected."
+      },
+      {
+        "id": "is-3",
+        "question": "Validation shows inconsistencies. What should I do?",
+        "answer": "Review the Income Statement or Balance Sheet against your original financials. Most discrepancies fall into one of three areas. To resolve them, click the Edit icon on the relevant row and follow the steps below:\n\n1. Reclassify items to the correct category. If the issue persists, proceed to Step 2.\n2. Invert signs if revenue or expenses are recorded differently. If still unresolved, proceed to Step 3.\n3. Include or exclude items as needed."
+      },
+      {
+        "id": "is-4",
+        "question": "I see a misclassification error. What should I do?",
+        "answer": "To fix this:\n1. Go to the Income Statement or Balance Sheet.\n2. Look for a line item that hasn't been classified.\n3. Assign the correct classification to that line item.\n\nExample: If Gross Profit is missing in Validation, find the line item that represents Gross Profit in the statement and assign the Gross Profit classification to it. Once all required line items are properly classified, the question mark icon will disappear and Validation will pass."
+      },
+      {
+        "id": "is-5",
+        "question": "Reclassification error. What should I do?",
+        "answer": "Our system detected line items that may be incorrectly classified. To resolve this:\n1. Open the Income Statement or Balance Sheet.\n2. Review the highlighted line items.\n3. Reassign them to the correct classification if needed."
+      },
+      {
+        "id": "is-6",
+        "question": "Validation mismatch. What should I do?",
+        "answer": "There's still a calculation mismatch between the reported values and our calculated values. To fix it, review the numbers in Validation, find the line item causing the difference, and either update its classification or (in rare cases) invert the sign."
+      },
+      {
+        "id": "is-7",
+        "question": "How do I fix a flagged row?",
+        "answer": "Click the Edit icon on the row to reclassify it, invert the value, or include/exclude it from calculations. For more guidance, see 'Validation shows inconsistencies. What should I do?' above."
+      },
+      {
+        "id": "is-8",
+        "question": "What does \"Excluded\" mean?",
+        "answer": "'Excluded' indicates that a line item is not included in the model's calculations."
+      }
+    ]
+  },
+  "balance-sheet": {
+    "questions": [
+      {
+        "id": "bs-1",
+        "question": "What is Validation?",
+        "answer": "The Validation section compares your input data to our classified totals."
+      },
+      {
+        "id": "bs-2",
+        "question": "Why are some values flagged in the Validation section?",
+        "answer": "The Validation section compares values from your uploaded Excel financials with the extracted data and Socratics.ai's calculations. Values are flagged when inconsistencies or mismatches are detected."
+      },
+      {
+        "id": "bs-3",
+        "question": "Validation shows inconsistencies. What should I do?",
+        "answer": "Review the Income Statement or Balance Sheet against your original financials. Most discrepancies fall into one of three areas. To resolve them, click the Edit icon on the relevant row and follow the steps below:\n\n1. Reclassify items to the correct category. If the issue persists, proceed to Step 2.\n2. Invert signs if revenue or expenses are recorded differently. If still unresolved, proceed to Step 3.\n3. Include or exclude items as needed."
+      },
+      {
+        "id": "bs-4",
+        "question": "I see a misclassification error. What should I do?",
+        "answer": "To fix this:\n1. Go to the Income Statement or Balance Sheet.\n2. Look for a line item that hasn't been classified.\n3. Assign the correct classification to that line item.\n\nExample: If Gross Profit is missing in Validation, find the line item that represents Gross Profit in the statement and assign the Gross Profit classification to it. Once all required line items are properly classified, the question mark icon will disappear and Validation will pass."
+      },
+      {
+        "id": "bs-5",
+        "question": "Reclassification error. What should I do?",
+        "answer": "Our system detected line items that may be incorrectly classified. To resolve this:\n1. Open the Income Statement or Balance Sheet.\n2. Review the highlighted line items.\n3. Reassign them to the correct classification if needed."
+      },
+      {
+        "id": "bs-6",
+        "question": "Validation mismatch. What should I do?",
+        "answer": "There's still a calculation mismatch between the reported values and our calculated values. To fix it, review the numbers in Validation, find the line item causing the difference, and either update its classification or (in rare cases) invert the sign."
+      },
+      {
+        "id": "bs-7",
+        "question": "How do I fix a flagged row?",
+        "answer": "Click the Edit icon on the row to reclassify it, invert the value, or include/exclude it from calculations. For more guidance, see 'Validation shows inconsistencies. What should I do?' above."
+      },
+      {
+        "id": "bs-8",
+        "question": "What does \"Excluded\" mean?",
+        "answer": "'Excluded' indicates that a line item is not included in the model's calculations."
+      }
+    ]
+  },
+  "financial-model": {
+    "questions": [
+      {
+        "id": "fm-1",
+        "question": "What is the Financial Model?",
+        "answer": "The Financial Model is a web and Excel-based, fully linked three-statement model connecting the Income Statement, Balance Sheet, and Cash Flow Statement. It includes historical and forecasted financials and can be exported to Excel. The model follows best-practice formatting and supports multiple valuation methodologies, including DCF, multiples, LBO models, and KPIs."
+      }
+    ]
+  },
+  "export": {
+    "questions": [
+      {
+        "id": "exp-1",
+        "question": "What is included in my Excel export?",
+        "answer": "A complete, professional model with:\n• Historical statements\n• Forecasting framework\n• Valuation modules\n• KPI dashboards"
+      },
+      {
+        "id": "exp-2",
+        "question": "My Excel report has blank cells. How do I fix this?",
+        "answer": "Turn on iterative calculations: Excel → File → Options → Formulas → Enable iterative calculation."
+      },
+      {
+        "id": "exp-3",
+        "question": "Excel is running slowly or lagging. What can I do?",
+        "answer": "Large data tables (DCF/LBO) can impact performance. Try:\n• Deleting the data tables, or\n• Changing calculations from \"Automatic\" to \"Manual\" mode\n\nFor more help: https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/excel/current-mode-of-calculation"
+      },
+      {
+        "id": "exp-4",
+        "question": "Can I change forecast drivers in the web app?",
+        "answer": "Not currently, but this is planned for our roadmap. In the current version, we provide pre-populated default drivers that you can modify after exporting to Excel."
+      },
+      {
+        "id": "exp-5",
+        "question": "Can I update an existing project?",
+        "answer": "Not yet. To update your model, re-upload the complete financial file, including both existing and new historical periods."
+      },
+      {
+        "id": "exp-6",
+        "question": "Can I modify classification in Excel?",
+        "answer": "Yes - this is fully editable. Go to the \"Config\" tab to rename, add, or remove classifications.\n\nRenaming a Classification: Go to the Config tab, locate the classification, and use Find & Replace across the workbook.\n\nAdding a Classification: In Config, add a new line with the classification (Column A) and its statement location (Column B). In the Income Statement, use the edit icon to reclassify items to the new category. For Monthly data: update Monthly Financials (insert row + copy SUMIFS formulas), Inputs (add forecast driver), and Annual Financials. For Annual data: update Annual Financials (insert row + copy SUMIFS formulas) and Inputs.\n\nDeleting a Classification: Reclassify items in Config, then delete the related rows in Monthly Financials and Annual Financials."
+      }
+    ]
+  }
+}

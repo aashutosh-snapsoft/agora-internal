@@ -1,0 +1,117 @@
+.classification-box {
+    border-radius: var(--8, 8px);
+    background: var(--primary-purple-50, rgba(229, 236, 246, 0.50));
+    display: flex;
+    padding: var(--8, 8px) var(--16, 16px);
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: var(--4, 4px);
+    align-self: stretch;
+}
+
+.classification-description {
+    color: var(--text-primary-light, #111827);
+    font-variant-numeric: lining-nums tabular-nums;
+    font-size: var(--font-size-sm, 0.875rem);
+    font-style: normal;
+    font-weight: 600;
+    line-height: 20px;
+}
+
+.classification-header {
+    color: var(--text-primary-light, #111827);
+    font-feature-settings: 'ss01'on, 'cv01'on, 'cv11'on;
+    font-size: var(--font-size-xs, 0.75rem);
+    font-style: normal;
+    font-weight: 900;
+    line-height: 18px;
+}
+
+.classification-category {
+    color: var(--text-primary-light, #111827);
+    font-variant-numeric: lining-nums tabular-nums;
+    font-size: var(--font-size-sm, 0.875rem);
+    font-style: normal;
+    font-weight: 600;
+    line-height: 20px;
+    margin: 20px 0px;
+}
+
+
+.MuiChip-colorWarning {
+    border-radius: var(--8, 8px) !important;
+    background: var(--Colors-Warning-300, rgba(254, 191, 6, 0.60)) !important;
+    color: #7A3109 !important;
+}
+
+
+.MuiChip-colorError {
+    border-radius: var(--80, 80px) !important;
+    background: var(--Colors-Danger-200, rgba(239, 71, 112, 0.40)) !important;
+    color: #63091F !important;
+}
+
+.MuiChip-colorSuccess {
+    color: #266338 !important;
+    border-radius: var(--80, 80px) !important;
+    background: var(--Colors-Success-25, rgba(17, 184, 134, 0.40)) !important;
+}
+
+
+.custom-badge>.MuiBadge-badge {
+    border-radius: var(--80, 80px);
+    background: var(--Colors-Warning-300, rgba(254, 191, 6, 0.60));
+    color: var(--Colors-Warning-900, #7A3109);
+    display: flex;
+    width: 28px;
+    padding: 1px 6px;
+    justify-content: center;
+    align-items: center;
+    top: 20px;
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+.cancel-button {
+    border-radius: var(--12, 12px) !important;
+    background: var(--Colors-Grey-200, #E5E7EB) !important;
+    display: flex !important;
+    padding: var(--8, 8px) var(--16, 16px) !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: var(--8, 8px) !important;
+    color: var(--Colors-Text-Text-Primary, #111827) !important;
+    text-align: center !important;
+    font-feature-settings: 'ss01'on, 'cv01'on, 'cv11'on !important;
+    font-size: 18px !important;
+    font-style: normal !important;
+    font-weight: 400 !important;
+    line-height: 24px !important;
+}
+
+.save-button {
+    border-radius: var(--12, 12px) !important;
+    background: var(--Colors-Accent-Accent-Primary, #111827) !important;
+    display: flex !important;
+    padding: var(--8, 8px) var(--16, 16px) !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: var(--8, 8px) !important;
+    color: var(--Colors-Background-Card, #FFF) !important;
+    text-align: center !important;
+    font-variant-numeric: lining-nums tabular-nums !important;
+    font-size: 18px !important;
+    font-style: normal !important;
+    font-weight: 450 !important;
+    line-height: 24px !important;
+}
+
+.footer-flex-box {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: 12px;
+}

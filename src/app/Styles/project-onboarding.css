@@ -1,0 +1,172 @@
+.messages-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Add smooth scrolling behavior */
+.messages-stack>div {
+    transform-origin: center bottom;
+}
+
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    position: relative;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.chat-container .answered-block {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.prompt-text {
+    width: 344px; /* Defined in Figma */
+}
+
+.chat-container .answered-block .prompt-text {
+    color: var(--text-primary-light, #111827);
+    font-size: var(--font-size-lg, 1.125rem);
+    font-family: 'Satoshi Variable';
+    font-weight: 400;
+    line-height: 24px;
+    margin: 0;
+}
+
+.chat-container .current-question .prompt-text {
+    color: var(--text-primary-light, #111827);
+    font-family: 'Satoshi Variable';
+    font-size: var(--font-size-lg, 1.125rem);
+    font-weight: 500;
+    white-space: pre-wrap;
+    margin: 0;
+}
+
+.chat-container .current-question .options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-left: 40px;
+}
+
+.chat-container .current-question .options .option-button {
+    color: var(--text-primary-light, #111827);
+    text-align: center;
+    font-size: var(--font-size-lg, 1.125rem);
+    font-weight: 400;
+    line-height: 24px;
+    padding: 8px 16px;
+    border-radius: 12px;
+    font-family: 'Satoshi Variable';
+    background: #f3f4f6;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.chat-container .current-question .options .option-button.selected {
+    background: var(--Colors-Primary-200, rgba(175, 255, 72, 0.4));
+}
+
+.chat-container .current-question .options .option-button:hover {
+    background: #d1d5db;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.chat-container .current-question .options .option-button:active {
+    transform: scale(0.98);
+}
+
+@keyframes chat-slide-up {
+    from {
+        opacity: 0;
+        transform: translateY(100%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.upload-container .upload-button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.upload-container .upload-button .upload-text p {
+    color: var(--Colors-Text-Text-Primary, #111827);
+    font-feature-settings: 'ss01'on, 'cv01'on, 'cv11'on;
+    font-size: var(--font-size-lg, 1.125rem);
+    font-style: normal;
+    font-weight: 700;
+    line-height: 24px;
+}
+
+.upload-container .upload-button .upload-text span {
+    color: var(--Colors-Text-Text-Primary, #111827);
+    font-variant-numeric: lining-nums tabular-nums;
+    font-size: var(--font-size-sm, 0.875rem);
+    font-style: normal;
+    font-weight: 600;
+    line-height: 20px;
+}
+
+.upload-container .uploaded-file-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    min-width: fit-content;
+    margin-top: 10px;
+}
+
+.upload-container .uploaded-file-container p {
+    color: var(--text-primary-light, #111827);
+    font-variant-numeric: lining-nums tabular-nums;
+    font-size: var(--font-size-sm, 0.875rem);
+    font-style: normal;
+    font-weight: 600;
+    line-height: 20px;
+}
+
+.upload-container .uploaded-text {
+    color: var(--Colors-Text-Text-Secondary, #6b7280);
+    font-feature-settings: 'ss01'on, 'cv01'on, 'cv11'on;
+    font-size: var(--font-size-lg, 1.125rem);
+    font-style: italic;
+    font-weight: 400;
+    line-height: 24px;
+}
+
+.upload-container .confirm-button {
+    display: flex;
+    padding: var(--8, 8px) var(--16, 16px);
+    justify-content: center;
+    align-items: center;
+    gap: var(--8, 8px);
+    border-radius: var(--12, 12px);
+    background: var(--Colors-Accent-Accent-Secondary, #f3f4f6);
+    color: var(--Colors-Text-Text-Primary, #111827);
+    text-align: center;
+    font-feature-settings: 'ss01'on, 'cv01'on, 'cv11'on;
+    font-size: var(--font-size-lg, 1.125rem);
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+    margin-top: 20px;
+}
+
+.upload-container .confirm-button:hover {
+    background: #d1d5db;
+    transform: scale(1.05);
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.upload-container .confirm-button:active {
+    transform: scale(0.98);
+}
