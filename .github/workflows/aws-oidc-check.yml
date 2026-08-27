@@ -6,6 +6,11 @@ name: AWS OIDC connection check
 # Run it from the Actions tab (Run workflow) whenever you want to confirm the connection.
 on:
   workflow_dispatch:
+  # Also run on push so the connection is re-verified automatically (and so it can be triggered
+  # without workflow-dispatch API access). Narrow to changes to this workflow to keep it quiet.
+  push:
+    paths:
+      - .github/workflows/aws-oidc-check.yml
 
 # Least privilege: id-token to request the OIDC token, contents:read for the checkout-free job.
 permissions:
