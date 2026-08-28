@@ -51,3 +51,31 @@ jobs:
 
       - name: Confirm ECR is reachable for the Agora repo
         run: echo "ECR login OK for ${ECR_REGISTRY}/socratics-agora"
+
+  oidc-check-devtest:
+    name: Assume dev-test role + reach ECR
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    # Overrides the top-level env: the dev-test (nonproduction) account's push role + ECR.
+    env:
+      AWS_ROLE_ARN: arn:aws:iam::049681810434:role/github-actions-agora-ecr-push
+      ECR_REGISTRY: 049681810434.dkr.ecr.us-west-2.amazonaws.com
+    steps:
+      - name: Configure AWS credentials via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+          role-session-name: agora-internal-oidc-check-devtest
+          retry-max-attempts: 1
+
+      - name: Who am I (proves the dev-test role was assumed)
+        run: |
+          aws sts get-caller-identity
+          echo "OIDC federation OK (dev-test) — assumed ${AWS_ROLE_ARN}"
+
+      - name: Log in to ECR (proves ecr:GetAuthorizationToken via the dev-test role)
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Confirm dev-test ECR is reachable for the Agora repo
+        run: echo "ECR login OK for ${ECR_REGISTRY}/socratics-agora"
